@@ -1,11 +1,17 @@
-N, M = map(int, input().split(" "))
-string_sound = input().split(" ")
-tuning = input().split(" ")
-sound = {}
-temp = []
-count_list = []
-diff_list = []
-diff = True
+import sys
+
+input = sys.stdin.readline
+
+from itertools import product
+from itertools import permutations
+
+N, M = input().strip().split()
+
+string = input().strip().split()
+string_converted = []
+tuning = input().strip().split()
+tuning_converted = []
+lcn = len(tuning)
 
 def translate_sound(str):
     num = 0
@@ -35,61 +41,47 @@ def translate_sound(str):
         num = 11
     return num
 
-for i in range(M):
-    diff_list.append(translate_sound(tuning[i]))
+plist = list(product(string, tuning))
+pplist = list(product(*[plist[i:i + lcn] for i in range(0, len(plist), lcn)]))
 
-for i in range(N):
-    s_sound = translate_sound(string_sound[i])
-    a = 0
-    if (string_sound[i] in tuning and not len(diff_list)) or (diff and string_sound[i] in tuning):
-        temp.append(0)
-        temp.append(0)
-    else:
-        for j in range(M):
-            t_sound = translate_sound(tuning[j])
-            a = t_sound - s_sound
-            if a < 0:
-                a += 12
-            if a > 0:
-                temp.append(a)
-            print(string_sound[i], "(", s_sound, ")", "->", tuning[j], "(", t_sound, ")  flat:", a)
-    print(" temp_list:  ", temp)
-    temp.sort()
-    t_temp = []
-    for k in temp:
-        if (k + s_sound) % 12 in diff_list:
-            t_temp.append(k)
-        else:
-            sound[i] = min(temp)
-    if len(t_temp):
-        print("t_temp:", t_temp)
-        sound[i] = min(t_temp)
-    if len(diff_list) and (s_sound + sound[i]) in diff_list:
-        diff_list.pop(diff_list.index(s_sound + sound[i]))
-        print(s_sound + sound[i], " diff_list 에서 제거")
-    print(diff_list)
-    print("count", sound[i], "삽입")
-    count_list.append(s_sound + temp[0])
-    temp = []
-    diff = False
+#print("plist:", plist)
+#print("pplist:", pplist)
+xxlist = []
+for x in pplist:
+    xlist = []
+    for xx in x:
+        xlist.append(xx[1])
+    #print(xlist)
+    if set(xlist) == set(tuning):
+        xxlist.append(x)
 
+#print(xxlist)
+sumlist = []
+count = 0
+for x in xxlist:
+    flet = []
+    minion = 12
+    print(count)
+    for xx in x:
+        print(xx[0], '->', xx[1],end=' ')
+        a = translate_sound(xx[1]) - translate_sound(xx[0])
+        if a < 0:
+            a += 12
+        print('flet:', a)
+        flet.append(a)
+        if a > 0 and translate_sound(xx[1]) > translate_sound(xx[0]):
+            flet.append(a+12)
+    print(flet)
+    if max(flet) == 0:
+        minion = -1
+    result_list = list(permutations(flet, 2))
+    print(result_list)
+    for m in result_list:
+        if max(m) - min(m) < minion and not (m[0] == 0 or m[1] == 0) and not (max(flet) == min(flet)):
+            minion = max(m) - min(m)
+    print("minion:", minion)
+    sumlist.append(minion)
+    count += 1
 
-
-small_key = list(sound.keys())[0]
-big_key = list(sound.keys())[0]
-print(sound.values())
-for i in range(len(sound)):
-    if list(sound.values())[i] == 0:
-        continue
-    if list(sound.keys())[i] < int(small_key) or sound[small_key] == 0:
-        small_key = list(sound.keys())[i]
-    if list(sound.keys())[i] > int(big_key) or sound[big_key] == 0:
-        big_key = list(sound.keys())[i]
-
-if sound[big_key] == 0 and sound[small_key] == 0:
-    print(0)
-elif abs(sound[big_key] - sound[small_key]) > 6:
-    small_num, big_num = min(sound[small_key], sound[big_key]), max(sound[small_key], sound[big_key])
-    print(abs(big_num - small_num - 12 + 1))
-else:
-    print(abs(sound[big_key] - sound[small_key]) + 1)
+print(sumlist)
+print(min(sumlist) + 1)
