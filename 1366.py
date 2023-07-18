@@ -8,9 +8,7 @@ from itertools import permutations
 N, M = input().strip().split()
 
 string = input().strip().split()
-string_converted = []
 tuning = input().strip().split()
-tuning_converted = []
 lcn = len(tuning)
 
 def translate_sound(str):
@@ -42,46 +40,47 @@ def translate_sound(str):
     return num
 
 plist = list(product(string, tuning))
-pplist = list(product(*[plist[i:i + lcn] for i in range(0, len(plist), lcn)]))
+all_mul_plist = list(product(*[plist[i:i + lcn] for i in range(0, len(plist), lcn)]))
 
 #print("plist:", plist)
 #print("pplist:", pplist)
-xxlist = []
-for x in pplist:
-    xlist = []
-    for xx in x:
-        xlist.append(xx[1])
+temp = []
+for i in all_mul_plist:
+    t_temp = []
+    for j in i:
+        t_temp.append(j[1])
     #print(xlist)
-    if set(xlist) == set(tuning):
-        xxlist.append(x)
+    if set(t_temp) == set(tuning):
+        temp.append(i)
 
 #print(xxlist)
 sumlist = []
 count = 0
-for x in xxlist:
+for i in temp:
     flet = []
     minion = 12
-    print(count)
-    for xx in x:
-        print(xx[0], '->', xx[1],end=' ')
-        a = translate_sound(xx[1]) - translate_sound(xx[0])
+    #print(count)
+    for j in i:
+        #print(j[0], '->', j[1],end=' ')
+        a = translate_sound(j[1]) - translate_sound(j[0])
         if a < 0:
             a += 12
-        print('flet:', a)
+        #print('flet:', a)
         flet.append(a)
-        if a > 0 and translate_sound(xx[1]) > translate_sound(xx[0]):
-            flet.append(a+12)
-    print(flet)
-    if max(flet) == 0:
-        minion = -1
+        flet.append(a + 12)
+    #print(flet)
     result_list = list(permutations(flet, 2))
-    print(result_list)
+    #print(result_list)
     for m in result_list:
-        if max(m) - min(m) < minion and not (m[0] == 0 or m[1] == 0) and not (max(flet) == min(flet)):
+        if max(flet) == min(flet) or max(flet) == min(flet) + 12:
+            if max(flet) == 12 or max(flet) == 0:
+                minion = -1
+            else:
+                minion = 0
+        elif max(m) - min(m) < minion and not (m[0] == 0 or m[1] == 0) and not max(m) == min(m):
             minion = max(m) - min(m)
-    print("minion:", minion)
+    #print("minion:", minion)
     sumlist.append(minion)
     count += 1
 
-print(sumlist)
 print(min(sumlist) + 1)
