@@ -23,7 +23,7 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 import java.util.concurrent.DelayQueue;
 
-public class Main {
+public class Solution_17141 {
 	static int n, m, two = 0; // m = depth
 	static int able = 0;
 	static int ans = Integer.MAX_VALUE;
