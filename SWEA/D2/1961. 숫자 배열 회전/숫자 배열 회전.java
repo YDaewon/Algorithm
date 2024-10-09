@@ -20,29 +20,29 @@
 // String var = "ABCDEFG";
 // long AB = 12345678901234567L;
 //System.out.println(a);                       // int 변수 1개 출력하는 예제
-//System.out.println(b);                                     // double 변수 1개 출력하는 예제
-//System.out.println(g);                                     // char 변수 1개 출력하는 예제
-//System.out.println(var);                             // 문자열 1개 출력하는 예제
-//System.out.println(AB);                                // long 변수 1개 출력하는 예제
+//System.out.println(b); 		       						 // double 변수 1개 출력하는 예제
+//System.out.println(g);		       						 // char 변수 1개 출력하는 예제
+//System.out.println(var);		       				   // 문자열 1개 출력하는 예제
+//System.out.println(AB);		       				     // long 변수 1개 출력하는 예제
 /////////////////////////////////////////////////////////////////////////////////////////////
 import java.util.Scanner;
 import java.io.FileInputStream;
- 
+
 /*
    사용하는 클래스명이 Solution 이어야 하므로, 가급적 Solution.java 를 사용할 것을 권장합니다.
    이러한 상황에서도 동일하게 java Solution 명령으로 프로그램을 수행해볼 수 있습니다.
  */
 class Solution
 {
-    public static void main(String args[]) throws Exception
-    {
-        Scanner sc = new Scanner(System.in);
-        int T;
-        T=sc.nextInt();
-        for(int test_case = 1; test_case <= T; test_case++) {
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int T;
+		T=sc.nextInt();
+		for(int test_case = 1; test_case <= T; test_case++) {
             int n;
             n = sc.nextInt();
-            int [][] arr = new int[7][7];
+			int [][] arr = new int[7][7];
             int [][] arr90 = new int[7][7];
             int [][] arr180 = new int[7][7];
             int [][] arr270 = new int[7][7];
@@ -73,6 +73,6 @@ class Solution
                 }
                 System.out.println();
             }
-        }
-    }
+		}
+	}
 }
