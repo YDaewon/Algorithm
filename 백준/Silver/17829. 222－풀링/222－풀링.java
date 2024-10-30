@@ -1,40 +1,58 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
-
-	static int N;
-	static int[][] map;
-
-	static int getValue(int[] arr) {
-		Arrays.sort(arr);
-		return arr[2];
-	}
-
-	static int func(int y, int x, int len) {
-		if (len == 2) {
-			return getValue(new int[] { map[y][x], map[y + 1][x], map[y][x + 1], map[y + 1][x + 1] });
-		}
-		len /= 2;
-		int n1 = func(y, x, len);
-		int n2 = func(y, x + len, len);
-		int n3 = func(y + len, x, len);
-		int n4 = func(y + len, x + len, len);
-		
-		return getValue(new int[] { n1, n2, n3, n4 });
-	}
-
-	public static void main(String[] args) throws Exception {
+	static int [][] board;
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-		map = new int[N][];
 		
-		for (int i=0; i<N; i++) {
-			map[i] = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+		int n = Integer.parseInt(br.readLine());
+		board = new int [n][n];
+		for(int i = 0 ; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+			for(int j = 0 ;j < n; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
 		}
+		System.out.println(polling(n, 0, 0));
 		
-		System.out.println(func(0, 0, N));
-
+	}
+	
+	static int polling(int size, int y, int x) { // 왼쪽 위 시작
+		if(size == 2) {
+			int f = Integer.MIN_VALUE;
+			int s = f;
+			for(int i = y; i < y + 2; i++) {
+				for(int j = x; j < x + 2;j++) {
+					if(board[i][j] >= f) {
+						s = f;
+						f = board[i][j];
+					}
+					else if (board[i][j] > s) {
+						s = board[i][j];
+					}
+				}
+			}
+			//System.out.println(y + ", " + x + ": " + s);
+			return s;
+		}
+		int fval = Integer.MIN_VALUE;
+		int sval = Integer.MIN_VALUE;
+		for(int i = 0; i <= size/2; i += size/2) {
+			for(int j = 0; j <= size/2;j += size/2) {
+				int val = polling(size/2, y + i, x + j);
+				if(val >= fval) {
+					sval = fval;
+					fval = val;
+				}
+				else if (val > sval) {
+					sval = val;
+				}
+			}
+		}
+		return sval;
 	}
 }
