@@ -4,55 +4,37 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
+
 public class Main {
-	static int [][] board;
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int n = Integer.parseInt(br.readLine());
-		board = new int [n][n];
-		for(int i = 0 ; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-			for(int j = 0 ;j < n; j++) {
-				board[i][j] = Integer.parseInt(st.nextToken());
-			}
+
+	static int N;
+	static int[][] map;
+
+	static int func(int y, int x, int len) {
+		if (len == 1) {
+			return map[y][x];
 		}
-		System.out.println(polling(n, 0, 0));
+		len /= 2;
+        int[] arr = new int[4];
+		arr[0] = func(y, x, len);
+		arr[1] = func(y, x + len, len);
+		arr[2] = func(y + len, x, len);
+		arr[3] = func(y + len, x + len, len);
 		
+		Arrays.sort(arr);
+		return arr[2];
 	}
-	
-	static int polling(int size, int y, int x) { // 왼쪽 위 시작
-		if(size == 2) {
-			int f = Integer.MIN_VALUE;
-			int s = f;
-			for(int i = y; i < y + 2; i++) {
-				for(int j = x; j < x + 2;j++) {
-					if(board[i][j] >= f) {
-						s = f;
-						f = board[i][j];
-					}
-					else if (board[i][j] > s) {
-						s = board[i][j];
-					}
-				}
-			}
-			//System.out.println(y + ", " + x + ": " + s);
-			return s;
-		}
-		int fval = Integer.MIN_VALUE;
-		int sval = Integer.MIN_VALUE;
-		for(int i = 0; i <= size/2; i += size/2) {
-			for(int j = 0; j <= size/2;j += size/2) {
-				int val = polling(size/2, y + i, x + j);
-				if(val >= fval) {
-					sval = fval;
-					fval = val;
-				}
-				else if (val > sval) {
-					sval = val;
-				}
+
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		map = new int[N][N];
+		for(int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for(int j = 0; j < N; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		return sval;
+		System.out.println(func(0, 0, N));
 	}
 }
