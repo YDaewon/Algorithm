@@ -1,54 +1,48 @@
 import java.util.Scanner;
 
 public class Main {
-	static int [] ans = {0,0,0}; // -1, 0, 1
-	static int [][] board;
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		board = new int [n][n];
-		for(int i = 0 ; i < n; i++) {
-			for(int j = 0 ;j < n; j++) {
-				board[i][j] = sc.nextInt();
+
+	static int N;
+	static int[] cnt = new int[3];
+	static int[][] map;
+
+	static int check(int y, int x, int len) {
+		int n = map[y][x];
+		for (int i = y; i < y + len; i++) {
+			for (int j = x; j < x + len; j++) {
+				if (map[i][j] != n)
+					return -99;
 			}
 		}
-		polling(n, 0, 0);
-		for(int i : ans) {
-			System.out.println(i);			
-		}
+		return n;
 	}
-	
-	static void polling(int size, int y, int x) { // 왼쪽 위 시작
-		if(size == 1) {
-			count_up(board[y][x]);
+
+	static void func(int y, int x, int len) {
+		int n = check(y, x, len);
+		if (n != -99) {
+			cnt[n + 1]++;
 			return;
 		}
-		boolean flag = true;
-		int val = board[y][x];
-		for(int i = y; i < y + size; i++) {
-			for(int j = x; j < x + size; j++) {
-				if(val != board[i][j]) {
-					flag = false;
-					break;
-				}
-			}
-			if(!flag) break;
-		}
-		if(flag) {
-			count_up(val);
-		}
-		else {
-			for(int i = 0; i < 3; i++) {
-				for(int j = 0; j < 3; j++) {
-					polling(size/3, y + (size/3 * i), x + (size/3 * j));
-				}
-			}
+		len /= 3;
+		for (int i = 0; i < 3; i++) {
+			func(y + len * i, x, len);
+			func(y + len * i, x + len, len);
+			func(y + len * i, x + len * 2, len);
 		}
 	}
-	
-	static void count_up(int num) {
-		if(num == 1) ans[2]++;
-		else if(num == 0) ans[1]++;
-		else ans[0]++;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		map = new int[N][N];
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				map[i][j] = sc.nextInt();
+			}
+		}
+		func(0, 0, N);
+		for (int i = 0; i < 3; i++) {
+			System.out.println(cnt[i]);
+		}
 	}
 }
