@@ -1,22 +1,22 @@
 import java.util.*;
 
 class Solution {
-    // 시간을 이분 탐색
     public long solution(int n, int[] times) {
-        Arrays.sort(times);  
         long answer = 0;
-        long left = 0;
-        long right = (long) times[times.length-1] * (long)n;
+        Arrays.sort(times);
         
-        while(left <= right){
-            long mid = (left + right) / 2;
-            
-            long people = counting_people(mid, times);
+        long start = 0;
+        long end = (long)times[times.length-1] * (long)n;
+        
+        while(start <= end){
+            long mid = (start + end) / 2;
+            long people = calc(mid, times);
+            System.out.println("now: " + mid + ", person: " + people);
             if(people < n){
-                left = mid + 1;
+                start = mid + 1;
             }
             else{
-                right = mid - 1;
+                end = mid - 1;
                 answer = mid;
             }
         }
@@ -24,12 +24,11 @@ class Solution {
         return answer;
     }
     
-    long counting_people(long time, int [] times){
-        long people = 0;
-        for(int i : times){
-            people += time / i;
+    long calc(long now, int [] times){
+        long cnt = 0;
+        for(int t : times){
+            cnt += now / t;
         }
-        return people;
+        return cnt;
     }
-    
 }
