@@ -3,9 +3,8 @@ class Solution {
         if(x < 0) return false;
         int s = x;
         int r = 0;
-        int t = 0;
         while(s != 0){
-            t = s % 10;
+            int t = s % 10;
             s /= 10;
             r = r*10 + t;
         }
