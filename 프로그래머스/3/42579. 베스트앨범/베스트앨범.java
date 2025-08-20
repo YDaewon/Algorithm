@@ -3,37 +3,49 @@ import java.util.*;
 class Solution {
     public List<Integer> solution(String[] genres, int[] plays) {
         List<Integer> answer = new ArrayList<>();
-        Map<String, Integer> total = new HashMap<>();
-        Map<String, Map<Integer, Integer>> musics = new HashMap<>();
-        for(int i = 0; i < genres.length; i++){
-            if(!total.containsKey(genres[i])){
-                total.put(genres[i], plays[i]);
-                
-                Map<Integer, Integer> temp = new HashMap<>();
-                temp.put(i, plays[i]);
-                musics.put(genres[i], temp);
-                
+        
+        Map<String, Integer> g = new TreeMap<>(Comparator.reverseOrder());
+        Map<String, List< int [] >> musics = new HashMap<>(); // 0 : idx, 1 : plays
+        // ------------------- Data Classification
+        for(int i = 0; i < plays.length; i++){
+            g.put(genres[i], g.getOrDefault(genres[i], 0) + plays[i]);
+            List<int []> temp = musics.getOrDefault(genres[i], new ArrayList<>());
+            temp.add(new int [] {i, plays[i]});
+            musics.put(genres[i], temp);
+        }
+        
+        // -------------------  Sort
+        List<String> bestAlbum = new ArrayList<>(g.keySet());
+        Collections.sort(bestAlbum, (a,b) -> g.get(b) > g.get(a) ? 1 : -1);
+        
+        for (String genre: musics.keySet()) {
+            Collections.sort(musics.get(genre), (a,b) -> {
+                                 if(b[1] != a[1]) 
+                                    return b[1] > a[1] ? 1 : -1;
+                                 else return b[0] < a[0] ? 1 : -1;
+            });
+        }
+        
+        
+        
+        for (Map.Entry<String, Integer> t : g.entrySet()) {
+            System.out.println(t.getKey() + " " + t.getValue());
+        }
+        System.out.println("Test");
+        for (Map.Entry<String, List<int []>> t : musics.entrySet()) {
+            for (int [] tt : t.getValue()) {
+                System.out.println(tt[0] + ": " + tt[1]);
             }
-            else{
-                musics.get(genres[i]).put(i, plays[i]);
-                total.put(genres[i], total.get(genres[i]) + plays[i]);
+        }
+        // ------------------------------- make answer
+        for (String genre : bestAlbum) {
+            int cnt = 0;
+            for (int [] music : musics.get(genre)) {
+                if(cnt++ >= 2) break;
+                answer.add(music[0]);
             }
         }
         
-        List<String> genre_key = new ArrayList<>(total.keySet());
-        
-        Collections.sort(genre_key, (s1, s2) -> total.get(s2) - (total.get(s1)));
-        
-        for(String genre : genre_key){
-            Map<Integer, Integer> temp = musics.get(genre);
-            List<Integer> music_num = new ArrayList<>(temp.keySet());
-            Collections.sort(music_num, (s1, s2) -> temp.get(s2) - (temp.get(s1)));
-            
-            answer.add(music_num.get(0));
-            if(music_num.size() > 1){
-                answer.add(music_num.get(1));
-            }
-        }
         return answer;
     }
 }
