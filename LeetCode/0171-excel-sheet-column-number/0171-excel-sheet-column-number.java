@@ -4,8 +4,8 @@ class Solution {
 
         for(int i = 0; i < str.length(); i++){
             char c = str.charAt(i);
+            res *= 26;
             res += c - 'A' + 1;
-            if(i < str.length() - 1) res *= 26;
         }
 
         return res;
