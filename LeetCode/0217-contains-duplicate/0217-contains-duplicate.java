@@ -3,12 +3,10 @@ class Solution {
         Map<Integer, Integer> map = new HashMap<>();
 
         for(int i : nums){
-            map.put(i, map.getOrDefault(i, 0) + 1);
+            if(map.getOrDefault(i, 0) == 0) map.put(i, 1);
+            else return true;
         }
 
-        for(int i : map.values()){
-            if(i != 1) return true;
-        }
         return false;
     }
 }
