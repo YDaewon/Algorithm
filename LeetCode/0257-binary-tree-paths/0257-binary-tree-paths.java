@@ -27,10 +27,7 @@ class Solution {
             result.add(str);
             return;
         }
-        str += root.val;
-        if(root.left != null || root.right != null){
-            str += "->";
-        }
+        str += root.val + "->";
 
         if(root.left != null) search(root.left, str);
         if(root.right != null) search(root.right, str);
