@@ -5,7 +5,7 @@ class Solution {
             cnt++;
             n--;
         }
-        System.out.println(cnt);
+        //System.out.println(cnt);
 
         if(cnt == 0)return false;
         else return true;
