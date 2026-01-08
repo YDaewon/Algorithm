@@ -1,93 +1,85 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
+import java.io.*;
+
 
 public class Main {
-    static int [][] board;
-    static boolean [][] visit;
-    static int n, m;
-    static int zero_cnt, ans;
-    static int [] dy = {-1,1,0,0};
-    static int [] dx = {0,0,-1,1};
+    static int d; // 0 : up, 1: right, 2: down, 3: left
+    static int [] dy = {-1,0,1,0};
+    static int [] dx = {0,1,0,-1};
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        n = sc.nextInt();
-        m = sc.nextInt();
-        board = new int [n][m];
+    static int n;
+    static int m;
+    static int answer = Integer.MIN_VALUE;
+    static int [][] map;
+    static int [][] mmap;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+
+        map = new int [n][m];
+        mmap = new int[n][m];
         for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
-                board[i][j] = sc.nextInt();
-                if(board[i][j] == 0) zero_cnt++;
+                map[i][j] = Integer.parseInt(st.nextToken());
             }
         }
         combination(0);
-        System.out.println(ans);
+        System.out.println(answer);
+
     }
 
     static void combination(int d){
         if(d == 3){
-            simulation();
+            bfs();
             return;
         }
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if(board[i][j] == 0) {
-                    board[i][j] = 1;
-                    combination(d+1);
-                    board[i][j] = 0;
+                if (map[i][j] == 0) {
+                    map[i][j] = 1;
+                    combination(d + 1);
+                    map[i][j] = 0;
                 }
             }
         }
     }
 
-    static void simulation(){
-        int [][] copy = new int [n][m];
-        Queue<Point> q = new LinkedList<>();
+    static void bfs(){
+        int cnt = 0;
+        Queue<int []> q = new LinkedList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                copy[i][j] = board[i][j];
-                if(copy[i][j] == 2) {
-                    q.offer(new Point(i,j));
+                mmap[i][j] = map[i][j];
+                if(mmap[i][j] == 2){
+                    q.add(new int [] {i, j});
                 }
             }
         }
         while(!q.isEmpty()){
-            Point p = q.poll();
-            for (int d = 0; d < 4; d++) {
-                int y = p.y + dy[d];
-                int x = p.x + dx[d];
-                if(y <0 || y >= n || x < 0 || x >= m) continue;
-                if(copy[y][x] == 0){
-                    q.offer(new Point(y,x));
-                    copy[y][x] = 2;
+            int [] cur = q.poll();
+            for (int i = 0; i < 4; i++) {
+                int ny = cur[0] + dy[i];
+                int nx = cur[1] + dx[i];
+                if(ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
+                if(mmap[ny][nx] == 0){
+                    q.add(new int [] { ny, nx});
+                    mmap[ny][nx] = 2;
                 }
             }
         }
-        int cnt = 0;
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if(copy[i][j] == 0) cnt++;
+                if(mmap[i][j] == 0) cnt++;
             }
         }
-        if(ans < cnt){
-            /*for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    System.out.print(copy[i][j] + " ");
-                }
-                System.out.println();
-            }
-            System.out.println("===============================");*/
-            ans = cnt;
-        }
+
+        answer = Math.max(cnt, answer);
     }
 
-
-    static class Point{
-        int y, x;
-        Point(int y, int x){
-            this.y = y;
-            this.x = x;
-        }
-    }
 }
