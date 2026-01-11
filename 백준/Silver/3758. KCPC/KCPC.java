@@ -29,14 +29,14 @@ public class Main {
             }
 
             for (int i = 0; i < n; i++) {
-                team[i].getTotel();
-                // System.out.println("team[" + (team[i].teamId+1) + "]'s score: " + team[i].total);
+                team[i].getTotal();
+            //    System.out.println("team[" + (team[i].teamId+1) + "]'s score: " + team[i].total);
             }
 
             Arrays.sort(team);
 
            // for (int i = 0; i < n; i++) {
-               // System.out.println("team[" + (team[i].teamId + 1) + "]'s rank: " + (i+1));
+           //     System.out.println("team[" + (team[i].teamId + 1) + "]'s rank: " + (i+1));
            // }
 
             for(int i = 0; i < n; i++){
@@ -59,9 +59,9 @@ class Team implements Comparable<Team>{
 
     @Override
     public int compareTo(Team o){
-        if(this.total == o.total && this.submitCount == o.submitCount) return this.submitTime > o.submitTime ? 1 : -1;
-        else if( this.total == o.total) return this.submitCount > o.submitCount ? 1 : -1;
-        else return this.total < o.total ? 1 : -1;
+        if(this.total != o.total) return o.total - this.total;
+        else if( this.submitCount != o.submitCount) return this.submitCount - o.submitCount;
+        else return this.submitTime - o.submitTime;
     }
 
     public Team(int id, int p_count){
@@ -77,7 +77,7 @@ class Team implements Comparable<Team>{
         problem[pid] = Math.max(problem[pid], score);
     }
 
-    public void getTotel(){
+    public void getTotal(){
         for (int i : problem) {
             total += i;
         }
