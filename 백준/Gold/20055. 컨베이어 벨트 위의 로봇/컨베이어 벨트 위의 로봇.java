@@ -1,90 +1,72 @@
 import java.io.*;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static int n, k;
-    static int [] belt;
-    static boolean [] robot;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        k = Integer.parseInt(st.nextToken());
-        belt = new int[n*2+1];
-        robot = new boolean[n];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < 2*n; i++) {
-            belt[i] = Integer.parseInt(st.nextToken());
-        }
+        int n = Integer.parseInt(st.nextToken());
+        int k = Integer.parseInt(st.nextToken());
 
-        int ans = 1;
-        while(true){
-            //System.out.println("seq: " + ans);
-            if(play() >= k) break;
-            ans++;
-        }
+        int [] a = new int [n * 2];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < 2 * n; i++) a[i] = Integer.parseInt(st.nextToken());
+
+        int ans = sim(n, k, a);
         System.out.println(ans);
     }
 
-    static int play(){
-        int zero_cnt = 0;
-        //System.out.println("=== lotate ===");
-        lotate();
-        //print();
-        //System.out.println("=== robot move ===");
-        robot_move();
-        //print();
-        if(belt[0] != 0 && !robot[0]){
-            robot[0] = true;
-            belt[0]--;
-        }
-        //System.out.println("=== robot up ===");
-        //print();
-        for (int i = 0; i < 2*n; i++) {
-            if(belt[i] == 0) zero_cnt++;
-        }
-        //System.out.println("zero: " + zero_cnt);
-        return zero_cnt;
-    }
-
-    static void lotate(){
-        int first = belt[2 * n -1];
-        for (int i = 2 * n - 1; i > 0; i--) {
-            belt[i] = belt[i-1]; // 벨트 회전
-            if(i <= n-1) robot[i] = robot[i-1]; // 로봇 회전
-
-        }
-        robot[n-1] = false;
-        robot[0] = false;
-        belt[0] = first;
-    }
-
-    static void robot_move(){
-        for (int i = n-1; i > 0; i--) {
-            if(robot[i-1] && !robot[i] && belt[i] != 0){
-                //System.out.println("move robot: " + (i-1) + " to " + i);
-                robot[i] = true; // 로봇 이동
-                robot[i-1] = false;
-                belt[i]--;
+    static int sim(int n, int k, int [] belt){
+        int len = 2 * n;
+        boolean [] robot = new boolean [n]; // 로봇 위치
+        int cycle = 1;
+        while(true){
+            //step 1
+            int temp = belt[len-1];
+            for (int i = len-1; i > 0; i--) {
+                belt[i] = belt[i-1];
+                if(i < n) robot[i] = robot[i-1];
             }
+            belt[0] = temp;
+            robot[n-1] = false;
+            robot[0] = false;
+//            {
+//                for (int i = 0; i < n; i++) {
+//                    System.out.print(belt[i] + " ");
+//                }
+//                System.out.println();
+//                for (int i = len - 1; i >= n; i--) {
+//                    System.out.print(belt[i] + " ");
+//                }
+//                System.out.println();
+//            }
+            // step2
+            for (int i = n-1; i > 1; i--) {
+                if(robot[i-1] && !robot[i] && belt[i] > 0){
+                    robot[i] = true;
+                    robot[i-1] = false;
+                    --belt[i];
+                }
+            }
+            robot[n-1] = false;
+            //step3
+            if(belt[0] > 0) {
+                robot[0] = true;
+                --belt[0];
+            }
+//            System.out.print("robot pos: ");
+//            for (int i = 0; i < n; i++) {
+//                System.out.print((robot[i] ? 1 : 0) + " ");
+//            }
+//            System.out.println();
+            int cnt = 0;
+            for (int i = 0; i < len; i++) {
+                if(belt[i] == 0) cnt++;
+            }
+            if(cnt >= k) break;
+            cycle++;
         }
-        robot[n-1] = false;
-    }
 
-    static void print(){
-        System.out.println("robot position");
-        for(int r = 0; r < n; r++){
-            if(robot[r]) System.out.print(r + " ");
-        }
-        System.out.println();
-
-        System.out.println("belt state");
-        for(int r = 0; r < 2*n; r++){
-            System.out.print(belt[r] + " ");
-        }
-        System.out.println();
-        System.out.println();
+        return cycle;
     }
 }
