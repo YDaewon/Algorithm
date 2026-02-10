@@ -1,72 +1,60 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int [] dy = {-1,1,0,0};
-	static int [] dx = {0,0,-1,1};
-	static Scanner sc =new Scanner(System.in);
-	static int v, e, start;
-	static List<Node> [] nodes;
-	static int [] dist;
-	public static void main(String[] args) {
-		init();
-		sol();
-	}
-	
-	static void init() {
-		v = sc.nextInt();
-		e = sc.nextInt();
-		start =sc.nextInt();
-		nodes = new ArrayList[v+1];
-		for(int i = 1; i <= v; i++) nodes[i] = new ArrayList<>();
-		for(int i = 0; i < e; i++) {
-			int f = sc.nextInt();
-			int s = sc.nextInt();
-			int cost = sc.nextInt();
-			nodes[f].add(new Node(s, cost));
-		}
-		dist = new int[v+1];
-		Arrays.fill(dist, Integer.MAX_VALUE);
-		dist[start] = 0;
-	}
-	
-	static void sol() {
-		dijkstra();
-		for(int i=1;i<=v;i++){
-	        if(dist[i] == Integer.MAX_VALUE) System.out.println("INF");
-	        else System.out.println(dist[i]);
-	    }
-	}
-	
-	static void dijkstra() {
-		PriorityQueue<Node> pq = new PriorityQueue<>();
-		pq.offer(new Node(start,0));
-		dist[start] = 0;
-		while(!pq.isEmpty()) {
-			Node p = pq.poll();
-			for(Node node : nodes[p.s]) {
-				int nxt_cost = node.cost + p.cost;
-				if(dist[node.s] > nxt_cost) {
-					dist[node.s] = nxt_cost;
-					pq.offer(new Node(node.s, nxt_cost));
-				}
-			}
-		}
-	}
-	
-	static class Node implements Comparable<Node>{
-		int s, cost;
-		Node(int s, int cost){
-			this.s = s;
-			this.cost = cost;
-		}
-		@Override
-		public int compareTo(Node o) {
-			return this.cost - o.cost;
-		}
-		
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int V = Integer.parseInt(st.nextToken());
+        int E = Integer.parseInt(st.nextToken());
+
+        int start = Integer.parseInt(br.readLine());
+
+        int [] answer = new int [V+1];
+        Arrays.fill(answer, Integer.MAX_VALUE);
+        List<Node> [] graph = new ArrayList[V+1];
+        for (int i = 1; i <= V; i++) {
+            graph[i] = new ArrayList<>();
+        }
+        for (int i = 0; i < E; i++) {
+            st = new StringTokenizer(br.readLine());
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            int cost = Integer.parseInt(st.nextToken());
+
+            graph[s].add(new Node(e, cost));
+        }
+
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.add(new Node(start, 0));
+        answer[start] = 0;
+        while(!pq.isEmpty()){
+            Node cur = pq.poll();
+            for(Node node : graph[cur.x]){
+                int nxt_cost = cur.cost + node.cost;
+                if(answer[node.x] > nxt_cost){
+                    answer[node.x] = nxt_cost;
+                    pq.add(new Node(node.x, nxt_cost));
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i = 1; i <= V; i++) sb.append((answer[i] == Integer.MAX_VALUE ? "INF" : answer[i]) + "\n");
+        System.out.println(sb);
+    }
+
+    static class Node implements Comparable<Node>{
+        int x;
+        int cost;
+
+        Node(int x, int c){
+            this.x = x;
+            this.cost = c;
+        }
+
+        @Override
+        public int compareTo(Node o){
+            return this.cost > o.cost ? 1 : -1;
+        }
+    }
 }
