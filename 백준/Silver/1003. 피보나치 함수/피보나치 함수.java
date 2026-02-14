@@ -1,5 +1,14 @@
  import java.io.*;
-import java.util.*;
+/*
+0: 1 0
+1: 0 1
+2: 1 1     f(1) + f(0)
+3: 1 2     f(2) + f(1)     f(1) + f(0) + f(1)
+4: 2 3     f(3) + f(2)     f(2) + f(1) + f(1) + f(0)     f(1) + f(0) + f(1) + f(1) + f(0)
+5: 3 5
+
+
+*/
 
 public class Main {
     static int [] zdp = new int [41];
