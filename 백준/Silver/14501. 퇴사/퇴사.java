@@ -1,30 +1,35 @@
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int n,ans = 0;
-	static int [][] cal;
-	
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		n = sc.nextInt();
-		cal = new int [n][2];
-		for(int i = 0 ; i < n ; i++) {
-			int t = sc.nextInt();
-			int p = sc.nextInt();
-			cal[i][0] = t;
-			cal[i][1] = p;
-		}
-		sol(0,0);
-		System.out.println(ans);
-	}
-	
-	static void sol(int day, int sum) {
-		if(day > n) return;
-		if(day == n) {
-			ans = Math.max(ans, sum);
+
+    static int n;
+    static int [][] consult;
+    static int answer = 0;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        consult = new int [n][2];
+        StringTokenizer st;
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            consult[i][0] = Integer.parseInt(st.nextToken());
+            consult[i][1] = Integer.parseInt(st.nextToken());
+        }
+        
+        calc(0, 0);
+
+        System.out.println(answer);
+    }
+
+    static void calc(int d, int sum){
+        if(d > n) return;
+		if(d == n) {
+			answer = Math.max(answer, sum);
 			return;
 		}
-		sol(day+cal[day][0], sum + cal[day][1]);
-		sol(day+1, sum);
-	}
+
+        calc(d + consult[d][0], sum + consult[d][1]);
+        calc(d + 1, sum);
+    }
 }
