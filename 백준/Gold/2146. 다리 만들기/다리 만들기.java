@@ -78,7 +78,7 @@ public class Main {
     static void make_bridge(int y, int x){
 
         int now_island = map[y][x];
-        Queue <int []> q = new LinkedList<>();
+        PriorityQueue <int []> q = new PriorityQueue <int []> ((a,b) -> a[2] - b[2]);
         q.add(new int[] {y, x, 0});
         visit[y][x] = true;
 
@@ -96,7 +96,7 @@ public class Main {
                     visit[ny][nx] = true;
                     if(map[ny][nx] != 0) {
                         answer = Math.min(answer, cur[2]);
-                        continue;
+                        return;
                     }
                     q.add(new int [] { ny, nx, cur[2] + 1});
                 }
