@@ -1,4 +1,7 @@
-# Write your MySQL query statement below
-SELECT w.id AS Id FROM Weather w
-JOIN Weather ww ON w.recordDate = ww.recordDate + 1
-WHERE w.temperature > ww.temperature;
+-- # Write your MySQL query statement below
+SELECT
+    b.id
+FROM 
+    Weather a
+JOIN Weather b ON DATEDIFF(b.recordDate, a.recordDate) = 1
+WHERE b.temperature > a.temperature
