@@ -1,30 +1,50 @@
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		long [][] dp = new long [n+1][n+1];
-		int [][] map = new int [n+1][n+1];
-		
-		for(int i = 1; i <= n; i++) {
-			for(int j = 1; j <= n; j++) {
-				map[i][j] = sc.nextInt();
-			}
-		}
-		dp[1][1] = 1;
+    static int n;
+    static int cnt = 0;
+    static int [][] map;
+    static long [][] dp;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        map = new int [n][n];
+        dp = new long [n][n];
+        StringTokenizer st;
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < n; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+        dp[0][0] = 1;
 
-		for(int y = 1; y <= n; y++) {
-			for(int x = 1; x <= n; x++) {
-				if(map[y][x] == 0) break;
-				int ny = y + map[y][x];
-				int nx = x + map[y][x];
-				//System.out.println(ny + ", " + nx);
-				if(ny <= n) dp[ny][x] += dp[y][x];
-				if(nx <= n) dp[y][nx] += dp[y][x];
-			}
-		}
-		System.out.println(dp[n][n]);
-		
-	}
+        int [] dy = {1, 0};
+        int [] dx = {0, 1};
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(dp[i][j] == 0) continue;
+                if(map[i][j] == 0) break;
+                for (int x = 0; x < 2; x++) {
+                    int ny = i + (dy[x] * map[i][j]);
+                    int nx = j + (dx[x] * map[i][j]);
+
+                    if(ny >= n || nx >= n) continue;
+                    // if(ny == n-1 && nx == n-1) System.out.println("i: " + i + ", j: " + j);
+                    dp[ny][nx] += dp[i][j];
+                }
+            }
+        }
+
+        // for (int i = 0; i < n; i++) {
+        //     for (int j = 0; j < n; j++) {
+        //         System.out.print(dp[i][j] + " ");
+        //     }
+        //     System.out.println();
+        // }
+        System.out.println(dp[n-1][n-1]);
+    }
+
+
 }
