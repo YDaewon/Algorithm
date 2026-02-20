@@ -1,53 +1,50 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int[][] board = new int[101][101];
-    static int[][] visit = new int[101][101];
+    static int [] dy = {-1,1,0,0};
+    static int [] dx = {0,0,-1,1};
+
     static int n, m;
-    static int[] headY = {-1, 1, 0, 0};
-    static int[] headX = {0, 0, -1, 1};
+    static int [][] map;
+    static boolean [][] visit;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        map = new int[n][m];
+        visit = new boolean[n][m];
 
-    public static int bfs(int startY, int startX) {
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[]{startY, startX});
-        visit[startY][startX] = 1;
+        for (int i = 0; i < n; i++) {
+            char [] str = br.readLine().toCharArray();
+            for (int j = 0; j < m; j++) {
+                map[i][j] = str[j] - '0';
+            }
+        }
 
-        while (!q.isEmpty()) {
-            int[] current = q.poll();
-            int ty = current[0];
-            int tx = current[1];
+        PriorityQueue<int []> pq = new PriorityQueue<>((a,b) -> a[2] - b[2]);
+        pq.add(new int [] {0, 0, 1});
 
+        while(!pq.isEmpty()){
+            int [] c = pq.poll();
+            if(c[0] == n -1 && c[1] == m-1){
+                System.out.println(c[2]);
+                return;
+            }
             for (int i = 0; i < 4; i++) {
-                int py = ty + headY[i];
-                int px = tx + headX[i];
+                int ny = c[0] + dy[i];
+                int nx = c[1] + dx[i];
 
-                if (py < 1 || py > n || px < 1 || px > m) continue;
-                if (board[py][px] == 1 && visit[py][px] == 0) {
-                    visit[py][px] = visit[ty][tx] + 1;
-                    q.add(new int[]{py, px});
+                if(ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
+                if(!visit[ny][nx] && map[ny][nx] == 1){
+                    visit[ny][nx] = true;
+                    pq.add(new int [] {ny,nx, c[2]+1});
                 }
             }
         }
-
-        return visit[n][m];
     }
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+   
 
-        n = sc.nextInt();
-        m = sc.nextInt();
-        sc.nextLine();  // Consume newline
-
-        for (int i = 1; i <= n; i++) {
-            String line = sc.nextLine();
-            for (int j = 1; j <= m; j++) {
-                board[i][j] = line.charAt(j - 1) - '0';
-            }
-        }
-
-        System.out.println(bfs(1, 1));
-    }
 }
