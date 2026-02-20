@@ -1,29 +1,34 @@
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        combination(0, 1, n, m);
+    static int n, m;
+    static boolean [] visit;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        visit = new boolean[n + 1];
+        next_permutation(0, 0);
     }
-    static int [] visit = new int[9];
-    static void combination(int depth, int now, int n, int m){
-        if(depth == m){
+
+    static void next_permutation(int d, int now){
+        if(d == m){
             for (int i = 1; i <= n; i++) {
-                if(visit[i] == 1){
-                    System.out.print(i + " ");
-                }
+                if(visit[i]) System.out.print(i + " ");
             }
             System.out.println();
             return;
         }
-        for (int i = now; i <= n; i++) {
-            if (visit[i] == 0) {
-                visit[i] = 1;
-                combination(depth + 1, i, n, m);
-                visit[i] = 0;
+
+        for (int i = now + 1; i <= n; i++) {
+            if(!visit[i]){
+                visit[i] = true;
+                next_permutation(d+1, i);
+                visit[i] = false;
             }
         }
     }
+
 }
