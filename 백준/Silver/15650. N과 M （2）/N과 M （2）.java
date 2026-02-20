@@ -10,10 +10,10 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
         visit = new boolean[n + 1];
-        next_permutation(0, 0);
+        next_combination(0, 0);
     }
 
-    static void next_permutation(int d, int now){
+    static void next_combination(int d, int now){
         if(d == m){
             for (int i = 1; i <= n; i++) {
                 if(visit[i]) System.out.print(i + " ");
@@ -25,7 +25,7 @@ public class Main {
         for (int i = now + 1; i <= n; i++) {
             if(!visit[i]){
                 visit[i] = true;
-                next_permutation(d+1, i);
+                next_combination(d+1, i);
                 visit[i] = false;
             }
         }
