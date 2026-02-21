@@ -1,55 +1,49 @@
-import java.io.*;
+ import java.io.*;
 import java.util.*;
 
-
 public class Main {
-    static int n, ans;
+    static int n;
     static int [] arr;
-    static boolean [] check, visit;
-    static List<Integer> list;
+    static boolean [] visit, answer;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
         arr = new int [n+1];
         visit = new boolean[n+1];
-        check = new boolean[n+1];
-        ans = 0;
+        answer = new boolean[n+1];
         for (int i = 1; i <= n; i++) {
             arr[i] = Integer.parseInt(br.readLine());
         }
+
         for (int i = 1; i <= n; i++) {
-            int now = i;
-            int nxt = arr[now];
-            list = new ArrayList<>();
-            visit[nxt] = true;
-            list.add(nxt);
-            IsCycle(nxt, i);
-            visit[nxt] = false;
+            visit[arr[i]] = true;
+            dfs(arr[i], i);
+            visit[arr[i]] = false;
+            
         }
+
+        int cnt = 0;
         for (int i = 1; i <= n; i++) {
-            if(check[i]) ans++;
+            if(answer[i]) cnt++; 
         }
-        System.out.println(ans);
+
+        System.out.println(cnt);
         for (int i = 1; i <= n; i++) {
-            if(check[i]) System.out.println(i);
+            if(answer[i]) System.out.println(i); 
         }
     }
 
-    static void IsCycle(int start, int end){
-        if(start == end){
-            for(int i : list){
-                //System.out.println(i + " is " + true);
-                check[i] = true;
+    static void dfs(int s, int e){
+        if(s == e){
+            for (int i = 0; i < n+1; i++) {
+                if(visit[i]) answer[i] = true;
             }
             return;
         }
-        int next = arr[start];
-        if(!visit[next]){
-            //System.out.println("cur: " + start + ", next: " + next);
-            visit[next] = true;
-            list.add(next);
-            IsCycle(next, end);
-            visit[next] = false;
+        if(!visit[arr[s]]){
+            visit[arr[s]] = true;
+            dfs(arr[s], e);
+            visit[arr[s]] = false;
         }
     }
 }
