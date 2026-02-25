@@ -1,30 +1,35 @@
-import java.util.Arrays;
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    static int n, d, k, c;
+    static int [] arr;
 
-        int N = sc.nextInt();
-        int d = sc.nextInt();
-        int k = sc.nextInt();
-        int c = sc.nextInt();
-        int [] sushi = new int [N + k];
-        for (int i = 0; i < N; i++) {
-            int t = sc.nextInt();
-            if(i < k) sushi[N+i] = t;
-            sushi[i] = t;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        d = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
+        arr = new int [n * 2];
+
+        for (int i = 0; i < n; i++) {
+            arr[i] = arr[n+i] = Integer.parseInt(br.readLine());
         }
 
-        int ans = 0;
+        // k 개 = e - s + 1
         boolean [] visit = new boolean[d+1];
-        for (int left = 0; left < N; left++) {
-            int cnt = 0;
-            for(int right = left; right < left+k; right++){
-               if (!visit[sushi[right]]) {
-                   visit[sushi[right]] = true;
-                   cnt++;
-               }
+        int ans = 0;
+        for (int s = 0; s < n; s++) {
+            int cnt = 1;
+            visit[arr[s]] = true;
+            for (int e = s+1; e < s + k; e++) {
+                if(!visit[arr[e]]){
+                    visit[arr[e]] = true;
+                    cnt++;
+                }
             }
             if(!visit[c]) cnt++;
             ans = Math.max(ans, cnt);
@@ -33,4 +38,5 @@ public class Main {
 
         System.out.println(ans);
     }
+
 }
