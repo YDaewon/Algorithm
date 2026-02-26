@@ -1,31 +1,43 @@
-import java.util.Arrays;
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
     static int n;
-    static int [] arr;
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        n = sc.nextInt();
-        arr = new int [n];
+    static int [] ox;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        ox = new int [n];
+
+        st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+            ox[i] = Integer.parseInt(st.nextToken());
         }
-        Arrays.sort(arr);
-        int ans1=0, ans2=0;
-        int val = Integer.MAX_VALUE;
-        int start = 0;
-        int end = n-1;
-        while(start < end){
-            int ans = arr[start] + arr[end];
-            if(Math.abs(ans) < val){
-                ans1 = start;
-                ans2 = end;
-                val = Math.abs(ans);
+
+        int left = 0;
+        int right = n-1;
+
+        int [] ans = new int [2];
+        int t = Integer.MAX_VALUE;
+
+        while(left < right){
+            int mid = (ox[left] + ox[right]);
+
+            if(Math.abs(mid) < t){
+                t = Math.abs(mid);
+                ans[0] = ox[left];
+                ans[1] = ox[right];
             }
-            if(ans < 0) start++;
-            else end--;
+
+            if(mid == 0) break;
+            else if(mid < 0) left++;
+            else right--;
         }
-        System.out.println(arr[ans1] + " " + arr[ans2]);
+
+        System.out.println(ans[0] + " " + ans[1]);
+        
     }
+
 }
