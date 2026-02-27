@@ -1,32 +1,40 @@
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int n, m;
-	static int [] arr, pnt;
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		n = sc.nextInt();
-		m = sc.nextInt();
-		arr = new int[9];
-		pnt = new int[9];
-		sol(0);
-	}
-	
-	static void sol(int d) {
-		if(d == m) {
-			for(int i = 0; i < m; i++) {
-				System.out.print(pnt[i] + " ");
-			}
-			System.out.println();
-			return;
-		}
-		for(int i = 1; i <= n; i++) {
-			if(arr[i] == 0) {
-				pnt[d] = i;
-				arr[i] = 1;
-				sol(d+1);
-				arr[i] = 0;
-			}
-		}
-	}
+    static int n, m;
+    static StringBuilder sb = new StringBuilder();
+    static boolean [] visit = new boolean[10];
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+
+        calc(0, new ArrayList<>());
+
+        System.out.println(sb);
+
+    }
+
+    static void calc(int d, List<Integer> cur){
+        if(d >= m){
+            for(int i : cur){
+                sb.append(i + " ");
+            }
+            sb.append("\n");
+            return;
+        }
+
+        for (int i = 1; i <= n; i++) {
+            if(!visit[i]){
+                visit[i] = true;
+                cur.add(i);
+                calc(d+1, cur);
+                cur.remove(cur.size()-1);
+                visit[i] = false;
+            }
+        }
+    }
 }
