@@ -1,52 +1,56 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        List<Node> [] nodes = new ArrayList[n+1];
-        boolean [] visit = new boolean[n+1];
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        for (int i = 1; i <= n; i++) {
-            nodes[i] = new ArrayList<>();
-        }
+    static int n, m;
+
+    static List<int []> [] g;
+    
+
+    static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(br.readLine());
+        g = new List[n+1];
+        for(int i = 0; i<= n; i++) g[i] = new ArrayList<>();
+
         for (int i = 0; i < m; i++) {
-            int s = sc.nextInt();
-            int e = sc.nextInt();
-            int c = sc.nextInt();
-            nodes[s].add(new Node(e, c));
-            nodes[e].add(new Node(s, c));
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+
+            g[a].add(new int [] {b, c});
+            g[b].add(new int [] {a,c});
         }
-        pq.add(new Node(1,0));
-        long ans = 0, cnt = 1;
+
+        boolean [] visit = new boolean[n+1];
+        
+        PriorityQueue<int []> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        pq.add(new int [] {1, 0}); 
+        int ans = 0;
+        int cnt = 0;
         while(!pq.isEmpty()){
-            Node cur = pq.poll();
-            if(visit[cur.x]) continue;
-            //System.out.println(cur.cost);
-            visit[cur.x] = true;
-            ans += cur.cost;
-            if(++cnt == n+1) break;
-            for(Node node : nodes[cur.x]){
-                pq.add(node);
+            int [] cur = pq.poll();
+
+            if(visit[cur[0]]) continue;
+
+            cnt++;
+            ans += cur[1];
+            visit[cur[0]] = true;
+
+            if(cnt == n){
+                System.out.println(ans);
+                return;
             }
-        }
-        System.out.println(ans);
-    }
 
-    static class Node implements Comparable<Node>{
-        int x, cost;
-        Node(int x, int cost){
-            this.x = x;
-            this.cost = cost;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return this.cost - o.cost;
+            for(int [] nxt : g[cur[0]]){
+                if(!visit[nxt[0]]){
+                    pq.add(new int [] {nxt[0], nxt[1]});
+                }
+            }
         }
     }
 }
