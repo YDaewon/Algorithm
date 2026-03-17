@@ -1,49 +1,63 @@
+ import java.io.*;
 import java.util.*;
-import java.io.*;
-
 
 public class Main {
+    static int n;
+    static Set<String> set;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(br.readLine());
+        n = Integer.parseInt(st.nextToken());
 
-        char [] even = br.readLine().toCharArray();
-        char [] odd = Arrays.copyOf(even, n);
+        char [] s1 = br.readLine().toCharArray();
+        char [] s2 = Arrays.copyOf(s1, n);
         char [] end = br.readLine().toCharArray();
 
-        int even_cnt = 1;
-        int odd_cnt = 0;
+        int s1_cnt = 1;
+        int s2_cnt = 0;
 
-        even[0] = (even[0] == '1') ? '0' : '1';
-        even[1] = (even[1] == '1') ? '0' : '1';
+        s1[0] = s1[0] == '0' ? '1' : '0';
+        s1[1] = s1[1] == '0' ? '1' : '0';
 
-        for (int i = 0; i < n-1; i++) {
-            if(even[i] != end[i]) {
-                even[i] = (even[i] == '1') ? '0' : '1';
-                even[i+1] = (even[i+1] == '1') ? '0' : '1';
-                if(i < n-2) even[i+2] = (even[i+2] == '1') ? '0' : '1';
-                even_cnt++;
+        for (int i = 1; i < n; i++) {
+            if(s1[i-1] != end[i-1]){
+                go(s1, i);
+                s1_cnt++;
             }
-            if(odd[i] != end[i]) {
-                odd[i] = (odd[i] == '1') ? '0' : '1';
-                odd[i+1] = (odd[i+1] == '1') ? '0' : '1';
-                if(i < n-2) odd[i+2] = (odd[i+2] == '1') ? '0' : '1';
-                odd_cnt++;
+
+            if(s2[i-1] != end[i-1]){
+                go(s2, i);
+                s2_cnt++;
             }
         }
-
-        boolean even_same = same(even, end);
-        boolean odd_same = same(odd, end);
-
-        if (even_same && odd_same) System.out.println(Math.min(even_cnt, odd_cnt));
-        else if(even_same) System.out.println(even_cnt);
-        else if (odd_same) System.out.println(odd_cnt);
+        // for(char c : s1) System.out.print(c);
+        // System.out.println();
+        // for(char c : s2) System.out.print(c);
+        // System.out.println();
+        boolean s1True = isTrue(s1, end);
+        boolean s2True = isTrue(s2, end);
+        
+        if(s1True && s2True) System.out.println(Math.min(s1_cnt, s2_cnt));
+        else if(s1True) System.out.println(s1_cnt);
+        else if(s2True) System.out.println(s2_cnt);
         else System.out.println(-1);
-    }
 
-    static boolean same(char [] s, char [] e){
-        for (int i = 0; i < s.length; i++) if(s[i] != e[i]) return false;
+    } 
+
+    static void go(char[] s, int idx) {
+    for (int i = idx - 1; i <= idx + 1; i++) {
+        if (i >= 0 && i < n) {
+            s[i] = (s[i] == '0') ? '1' : '0';
+        }
+    }
+}
+
+    static boolean isTrue(char [] a, char [] b){
+        for(int i = 0; i < n; i++){
+            if(a[i] != b[i]) return false;
+        }
         return true;
     }
+
 }
