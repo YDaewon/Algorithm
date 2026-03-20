@@ -9,52 +9,43 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         n = Integer.parseInt(st.nextToken());
-
         char [] s1 = br.readLine().toCharArray();
         char [] s2 = Arrays.copyOf(s1, n);
-        char [] end = br.readLine().toCharArray();
+        char [] e = br.readLine().toCharArray();
 
-        int s1_cnt = 1;
-        int s2_cnt = 0;
+        int s1_cnt = 0;
+        int s2_cnt = 1;
 
-        s1[0] = s1[0] == '0' ? '1' : '0';
-        s1[1] = s1[1] == '0' ? '1' : '0';
+        s2[0] = (s2[0] == '0') ? '1' : '0';
+        s2[1] = (s2[1] == '0') ? '1' : '0';
 
-        for (int i = 1; i < n; i++) {
-            if(s1[i-1] != end[i-1]){
-                go(s1, i);
+
+        for (int i = 0; i < n-1; i++) {
+            if(s1[i] != e[i]) {
+                calc(s1, i);
                 s1_cnt++;
             }
-
-            if(s2[i-1] != end[i-1]){
-                go(s2, i);
+            if(s2[i] != e[i]) {
+                calc(s2, i);   
                 s2_cnt++;
-            }
+            } 
         }
-        // for(char c : s1) System.out.print(c);
-        // System.out.println();
-        // for(char c : s2) System.out.print(c);
-        // System.out.println();
-        boolean s1True = isTrue(s1, end);
-        boolean s2True = isTrue(s2, end);
         
-        if(s1True && s2True) System.out.println(Math.min(s1_cnt, s2_cnt));
-        else if(s1True) System.out.println(s1_cnt);
-        else if(s2True) System.out.println(s2_cnt);
-        else System.out.println(-1);
+        int answer = Integer.MAX_VALUE;
+        if(isSame(s1, e)) answer = Math.min(answer, s1_cnt);
+        if(isSame(s2, e)) answer = Math.min(answer, s2_cnt);
 
+        System.out.println((answer == Integer.MAX_VALUE ? -1 : answer));
     } 
 
-    static void go(char[] s, int idx) {
-    for (int i = idx - 1; i <= idx + 1; i++) {
-        if (i >= 0 && i < n) {
-            s[i] = (s[i] == '0') ? '1' : '0';
-        }
+    static void calc(char [] c, int i){
+        c[i] = (c[i] == '0') ? '1' : '0';
+        if(i + 1 < n) c[i+1] = (c[i+1] == '0') ? '1' : '0';
+        if(i + 2 < n) c[i+2] = (c[i+2] == '0') ? '1' : '0';
     }
-}
 
-    static boolean isTrue(char [] a, char [] b){
-        for(int i = 0; i < n; i++){
+    static boolean isSame(char [] a, char [] b){
+        for (int i = 0; i < n; i++) {
             if(a[i] != b[i]) return false;
         }
         return true;
