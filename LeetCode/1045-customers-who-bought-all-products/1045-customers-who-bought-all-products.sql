@@ -1,5 +1,4 @@
 # Write your MySQL query statement below
--- ALL purchase
 SELECT
     customer_id
 FROM Customer
