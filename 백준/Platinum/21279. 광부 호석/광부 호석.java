@@ -3,66 +3,76 @@ import java.util.*;
 
 public class Main {
     static int n, c;
-    static int maxH = 0, maxW = 0;
-    static List<Node> [] jewel;
-    
+
+    static List<Jewel> arr = new ArrayList<>();
+
+    static List<Jewel>[] ax;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         c = Integer.parseInt(st.nextToken());
-        List<int []> input = new ArrayList<>();
+        int maxy = 0;
+        int maxx = 0;
         for (int i = 0; i < n; i++) {
-            int [] arr = new int[3];
             st = new StringTokenizer(br.readLine());
-            arr[0] = Integer.parseInt(st.nextToken()); // x
-            maxW = Math.max(arr[0], maxW);
-            arr[1] = Integer.parseInt(st.nextToken()); // y
-            maxH = Math.max(arr[1], maxH);
-            arr[2] = Integer.parseInt(st.nextToken()); // cost
-            input.add(arr);
+            int y = Integer.parseInt(st.nextToken());
+            maxy = Math.max(y, maxy);
+            int x = Integer.parseInt(st.nextToken());
+            maxx = Math.max(x, maxx);
+            int cost = Integer.parseInt(st.nextToken());
+
+            arr.add(new Jewel(y, x, cost));
         }
 
-        jewel = new ArrayList[maxW + 1];
-        for (int i = 0; i <= maxW; i++) {
-            jewel[i] = new ArrayList<>();
-        }
+        ax = new List[maxx+1];
+        for (int i = 0; i < maxx+1; i++) ax[i] = new ArrayList<>();
 
-        for(int [] in : input){
-            jewel[in[0]].add(new Node(in[1], in[2]));
-        }
-
+        for(Jewel j : arr) ax[j.x].add(j);
+        
+        long ans = 0;
+        int nowy = maxy;
+        PriorityQueue<Jewel> pq = new PriorityQueue<>((a, b) -> b.y - a.y);
         long sum = 0;
-        long answer = 0;
-        PriorityQueue<int []> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
 
-        for(int w = 0; w <= maxW; w++){
-            if(jewel[w].isEmpty()) continue;
-            for(Node node : jewel[w]){
-                pq.add(new int[] {node.p, node.cost});
-                sum += node.cost;
-            }
+        for (int sx = 0; sx <= maxx; sx++) {
+            if(ax[sx].isEmpty()) continue;
 
-            while(pq.size() > c){
-                int mh = pq.peek()[0];
-                while (!pq.isEmpty() && pq.peek()[0] == mh) {
-                    int [] now = pq.poll();
-                    sum -= now[1];
+            for (Jewel j : ax[sx]) {
+                if(nowy >= j.y) {
+                    pq.add(j);
+                    sum += j.cost;
                 }
             }
 
-            answer = Math.max(sum, answer);
+
+            while(pq.size() > c){
+                int max = pq.peek().y;
+                while(!pq.isEmpty() && max == pq.peek().y){
+                    sum -= pq.poll().cost;
+                }
+                nowy = max;
+            }
+
+            ans = Math.max(ans, sum);
         }
-        
-        System.out.println(answer);
+
+
+       System.out.println(ans);
+
     }
 
-    static class Node{
-        int p;
+    static class Jewel{
+        int y;
+        int x;
         int cost;
-        Node(int p, int cost){
-            this.p = p;
+
+        Jewel(int y, int x, int cost){
+            this.y = y;
+            this.x = x;
             this.cost = cost;
         }
     }
+
 }
