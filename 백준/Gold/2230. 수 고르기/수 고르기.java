@@ -27,8 +27,7 @@ public class Main {
             int mid = Math.abs(arr[l] - arr[r]);
 
             if(mid < m){
-                if(r < n - 1) r++;
-                else l++;
+                r++;
             }
             else{
                 temp = Math.min(temp, mid);
