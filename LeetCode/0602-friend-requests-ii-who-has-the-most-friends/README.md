@@ -1,4 +1,4 @@
-<h2><a href="https://leetcode.com/problems/friend-requests-ii-who-has-the-most-friends">602. Friend Requests II: Who Has the Most Friends</a></h2><h3>Medium</h3><hr><p>Table: <code>RequestAccepted</code></p>
+<h2><a href="https://leetcode.com/problems/friend-requests-ii-who-has-the-most-friends/">602. Friend Requests II: Who Has the Most Friends</a></h2><h3>Medium</h3><hr><p>Table: <code>RequestAccepted</code></p>
 
 <pre>
 +----------------+---------+
