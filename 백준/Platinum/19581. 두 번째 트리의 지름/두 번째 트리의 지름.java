@@ -1,74 +1,70 @@
-import java.io.*;
+ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int n, m;
-    static int [] p;
-    static List<Edge> [] graph;
+    static int n;
+    static List<Node> [] tree;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine()); // 
-        StringTokenizer st;
-        
-        graph = new ArrayList[n+1];
+        n = Integer.parseInt(br.readLine());
+        tree = new List[n+1];
         for (int i = 1; i <= n; i++) {
-            graph[i] = new ArrayList<>();
+            tree[i] = new ArrayList<>();
         }
-        for (int i = 2; i <= n; i++) {
+        StringTokenizer st;
+        for (int i = 1; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             int s = Integer.parseInt(st.nextToken());
             int e = Integer.parseInt(st.nextToken());
             int cost = Integer.parseInt(st.nextToken());
-            graph[s].add(new Edge(s, e, cost));
-            graph[e].add(new Edge(e, s, cost));
+            tree[s].add(new Node(s, e, cost));
+            tree[e].add(new Node(e, s, cost));
         }
-        
-        Edge start2most = find_edge(1, -1);
-        Edge most2most = find_edge(start2most.e, -1);
-        Edge most2second = find_edge(most2most.s, most2most.e);
-        Edge second2most = find_edge(most2most.e, most2most.s);
 
-        // System.out.println("start2most: " + start2most.s + ", " + start2most.e + ", cost: " + start2most.cost);
-        // System.out.println("most2most: " + most2most.s + ", " + most2most.e + ", cost: " + most2most.cost);
-        // System.out.println("most2second: " + most2second.s + ", " + most2second.e + ", cost: " + most2second.cost);
-        // System.out.println("second2most: " + second2most.s + ", " + second2most.e + ", cost: " + second2most.cost);
+        Node start2root = find(1, -1);
+        Node root2most = find(start2root.e, -1);
 
-        Edge result = most2second.cost > second2most.cost ? most2second : second2most;
+        Node second2most = find(root2most.e, root2most.s);
+        Node most2second = find(root2most.s, root2most.e);
 
-        System.out.println(result.cost);
+        System.out.println(second2most.cost < most2second.cost ? most2second.cost : second2most.cost);
     }
 
-    static Edge find_edge(int s, int not){
-        Queue<int []> q = new LinkedList<>();
-        q.add(new int [] {s, 0});
-        int max_cost = 0;
-        int e = 0;
+    static Node find(int start, int not){
         boolean [] visit = new boolean[n+1];
-        visit[s] = true;
+        Queue<Node> q = new LinkedList<>();
+
+        q.add(new Node(start, start, 0));
+        visit[start] = true;
+
+        Node result = new Node(start,start,0);
+
         while(!q.isEmpty()){
-            int [] cur = q.poll();
-            if(cur[1] > max_cost && cur[0] != not){
-                max_cost = cur[1];
-                e = cur[0];
+            Node cur = q.poll();
+
+            if(result.cost < cur.cost && cur.e != not){
+                result = new Node(start, cur.e, cur.cost);
             }
-            for(Edge edge : graph[cur[0]]){
-                if(!visit[edge.e] && edge.e != not) {
-                    // System.out.println(cur[0]+ ", " + edge.e + ", " + (cur[1] + edge.cost));
-                    visit[edge.e] = true;
-                    q.add(new int [] {edge.e, cur[1] + edge.cost});
+
+            for (Node nxt : tree[cur.e]) {
+                if(nxt.e == not) continue;
+                if(!visit[nxt.e]){
+                    visit[nxt.e] = true;
+                    q.add(new Node(nxt.s, nxt.e, cur.cost + nxt.cost));
                 }
             }
         }
-        // System.out.println("==============");
-        return new Edge(s, e, max_cost);
+
+        return result;
     }
 
-
-    static class Edge{
+    static class Node{
         int s;
         int e;
         int cost;
-        public Edge(int s, int e, int cost){
+
+        Node(int s, int e, int cost){
             this.s = s;
             this.e = e;
             this.cost = cost;
