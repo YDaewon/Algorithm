@@ -1,17 +1,14 @@
 # Write your MySQL query statement below
-WITH a AS(
+WITH A AS(
     SELECT
         customer_id,
-        MIN(order_date) AS mini
+        MIN(order_date)
     FROM Delivery
     GROUP BY customer_id
 )
 
-SELECT 
-    ROUND(
-        SUM(CASE WHEN d.order_date = d.customer_pref_delivery_date THEN 1 ELSE 0 END) / 
-        COUNT(*), 5
-    ) * 100 AS immediate_percentage
-FROM a
-JOIN Delivery d ON a.customer_id = d.customer_id
-WHERE a.mini = d.order_date
+SELECT
+    ROUND(100 * SUM(CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END) / COUNT(*) , 2) AS immediate_percentage
+FROM Delivery
+WHERE (customer_id, order_date) IN (SELECT * FROM A)
+
