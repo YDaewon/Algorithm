@@ -1,27 +1,35 @@
-import java.util.Scanner;
+ import java.io.*;
+import java.util.*;
 
 public class Main {
+    static int n;
     static StringBuilder sb = new StringBuilder();
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int [] prime = {2,3,5,7};
-        for(int a : prime) sol(a, n-1);
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+
+        go(0, 0);
         System.out.println(sb);
     }
 
-    static void sol(int cur, int n){
-        if(n == 0 && check(cur)) sb.append(cur + "\n");
-        for (int i = 1; i < 10; i++) {
-            int t = cur * 10 + i;
-            if(check(t)) sol(t, n-1);
+    static void go(int d, int num){
+        if(d == n){
+            sb.append(num + "\n");
+            return;
+        }
+
+        int sup = num * 10;
+        for (int i = 1; i <= 9; i++) {
+            int nxt = sup + i;
+            if(isPrime(nxt)) go(d+1, sup + i);
         }
     }
 
-    static boolean check(int num){
-        if(num < 2) return false;
-        for(int i = 2; i <= Math.sqrt(num); i++){
-            if(num % i == 0) return false;
+    private static boolean isPrime(int nxt) {
+        if(nxt == 1) return false;
+        for (int i = 2; i <= (int) Math.sqrt(nxt); i++) {
+            if(nxt % i == 0) return false;
         }
         return true;
     }
