@@ -2,10 +2,6 @@
 import java.util.*;
 
 public class Main {
-    static int n, m;
-    static int [][] board;
-    static boolean [][] visit;
-    static int ans = 0;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         char[] str = br.readLine().toCharArray();
