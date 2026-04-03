@@ -32,17 +32,20 @@ public class Main {
 
         bfs(y, x);
 
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if(cnt[i][j] == Integer.MAX_VALUE){
-                    if(map[i][j] == 0) System.out.print(0 + " ");
-                    else System.out.print(-1 + " ");
+                    if(map[i][j] == 0) sb.append(0);
+                    else sb.append(-1);
                 }
-                else System.out.print(cnt[i][j] + " ");
-            }
-            System.out.println();
-        }
+                else sb.append(cnt[i][j]);
 
+                sb.append(" ");
+            }
+            sb.append("\n");
+        }
+        System.out.println(sb);
     }
     private static void bfs(int y, int x) {
         Queue<int []> q = new LinkedList<>();
