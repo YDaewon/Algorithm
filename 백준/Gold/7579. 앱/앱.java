@@ -1,48 +1,43 @@
- import java.io.*;
+import java.io.*;
 import java.util.*;
 
 public class Main {
     static int n, m;
     static int [] arr;
-    static int [] mem;
-
-    static int [] dp;
-    static StringBuilder sb = new StringBuilder();
+    static int [] cost;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-
-        arr = new int [n];
-        mem = new int [n];
+        arr= new int[n];
+        cost = new int [n];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
+
         st = new StringTokenizer(br.readLine());
-        int t = 0;
+        int temp = 0;
         for (int i = 0; i < n; i++) {
-            mem[i] = Integer.parseInt(st.nextToken());
-            t += mem[i];
+            cost[i] = Integer.parseInt(st.nextToken());
+            temp += cost[i];
         }
-        dp = new int [t+1];
+
+        int [] dp = new int [temp+1]; // n의 비용을 냈을 때 얻을 수 있는 메모리 공간의 최대
 
         for (int i = 0; i < n; i++) {
-            for (int j = t; j >= 0; j--) {
-                if(j >= mem[i]) dp[j] = Math.max(dp[j], dp[j - mem[i]] + arr[i]);
+            for (int j = temp; j >= 0; j--) {
+                if(j >= cost[i]) dp[j] = Math.max(dp[j], dp[j - cost[i]] + arr[i]);
             }
         }
-
-        for(int i = 0; i <= t; i++){
-            //System.out.print(dp[i] + " ");
+        
+        for (int i = 0; i < dp.length; i++) {
             if(dp[i] >= m){
                 System.out.println(i);
-                break;
+                return;
             }
         }
-
     }
-
 }
