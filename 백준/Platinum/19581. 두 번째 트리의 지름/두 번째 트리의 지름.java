@@ -1,58 +1,63 @@
- import java.io.*;
+import java.io.*;
 import java.util.*;
 
 public class Main {
     static int n;
+    
     static List<Node> [] tree;
 
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        
+        n = Integer.parseInt(st.nextToken());
         tree = new List[n+1];
+
         for (int i = 1; i <= n; i++) {
             tree[i] = new ArrayList<>();
         }
-        StringTokenizer st;
+
         for (int i = 1; i < n; i++) {
             st = new StringTokenizer(br.readLine());
-            int s = Integer.parseInt(st.nextToken());
-            int e = Integer.parseInt(st.nextToken());
-            int cost = Integer.parseInt(st.nextToken());
-            tree[s].add(new Node(s, e, cost));
-            tree[e].add(new Node(e, s, cost));
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            tree[a].add(new Node(b, c));
+            tree[b].add(new Node(a, c));
         }
 
-        Node start2root = find(1, -1);
-        Node root2most = find(start2root.e, -1);
+        Node end = find(1, -1);
+        Node longest = find(end.x, -1);
 
-        Node second2most = find(root2most.e, root2most.s);
-        Node most2second = find(root2most.s, root2most.e);
+        Node second1 = find(longest.x, end.x);
+        Node second2 = find(end.x, longest.x);
 
-        System.out.println(second2most.cost < most2second.cost ? most2second.cost : second2most.cost);
+        System.out.println(second1.cost > second2.cost ? second1.cost : second2.cost);
+
+
     }
 
     static Node find(int start, int not){
-        boolean [] visit = new boolean[n+1];
         Queue<Node> q = new LinkedList<>();
+        boolean [] visit = new boolean[n+1];
 
-        q.add(new Node(start, start, 0));
+        Node result = new Node(start, 0);
         visit[start] = true;
-
-        Node result = new Node(start,start,0);
+        q.add(result);
 
         while(!q.isEmpty()){
             Node cur = q.poll();
 
-            if(result.cost < cur.cost && cur.e != not){
-                result = new Node(start, cur.e, cur.cost);
+            if(result.cost < cur.cost){
+                result = cur;
             }
 
-            for (Node nxt : tree[cur.e]) {
-                if(nxt.e == not) continue;
-                if(!visit[nxt.e]){
-                    visit[nxt.e] = true;
-                    q.add(new Node(nxt.s, nxt.e, cur.cost + nxt.cost));
-                }
+            for (Node nxt : tree[cur.x]) {
+                if(nxt.x == not) continue;
+                if(visit[nxt.x]) continue;
+                q.add(new Node(nxt.x, cur.cost + nxt.cost));
+                visit[nxt.x] = true;
             }
         }
 
@@ -60,14 +65,14 @@ public class Main {
     }
 
     static class Node{
-        int s;
-        int e;
+        int x;
         int cost;
 
-        Node(int s, int e, int cost){
-            this.s = s;
-            this.e = e;
+        Node(int x, int cost){
+            this.x = x;
             this.cost = cost;
         }
     }
+
+
 }
