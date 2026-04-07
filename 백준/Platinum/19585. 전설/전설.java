@@ -1,83 +1,79 @@
- import java.io.*;
+import java.io.*;
 import java.util.*;
 
 public class Main {
     static int c, n;
-    static Trie trie;
-    static String [] color;
-    static Set<String> nickname;
+    static Trie root = new Trie();
+    static List<String> nickname = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
+        
         c = Integer.parseInt(st.nextToken());
         n = Integer.parseInt(st.nextToken());
 
-        nickname = new HashSet<>();
-
-        trie = new Trie();
-
         for (int i = 0; i < c; i++) {
-            trie.insert(br.readLine());
+            root.insert(br.readLine());
         }
         for (int i = 0; i < n; i++) {
             nickname.add(br.readLine());
         }
 
         int q = Integer.parseInt(br.readLine());
+
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < q; i++) {
-            if(trie.search(br.readLine())) sb.append("Yes").append("\n");
-            else sb.append("No").append("\n");
+        while(q-- > 0){
+            String s = br.readLine();
+            if(root.search(s)) sb.append("Yes");
+            else sb.append("No");
+            sb.append("\n");
         }
 
         System.out.println(sb);
-    } 
+    }
 
     static class Trie{
-        Letter root;
+        Node root;
 
         Trie(){
-            root = new Letter();
+            this.root = new Node();
         }
 
-        void insert(String str){
-            Letter l = this.root;
+        void insert(String s){
+            Node cur = root;
 
-            for(char c : str.toCharArray()){
-                int i = c - 'a';
-                if(l.next[i] == null) l.next[i] = new Letter(); 
-                l = l.next[i];
+            for (char c : s.toCharArray()) {
+                if(cur.child[c - 'a'] == null) cur.child[c - 'a'] = new Node();
+                cur = cur.child[c - 'a'];
             }
-            l.isEnd = true;
+            cur.isEnd = true;
         }
 
-        boolean search(String str){
-            Letter l = this.root;
+        
+        boolean search(String s){
+            Node cur = root;
+            int idx = 0;
+            for (char c : s.toCharArray()) {
+                cur = cur.child[c - 'a'];
+                if(cur == null) break;
 
-            for(int i = 0; i < str.length(); i++){
-                char c = str.charAt(i);
-
-                l = l.next[c-'a'];
-                if(l == null) break;
-
-                if(l.isEnd){
-                    if(nickname.contains(str.substring(i+1))) return true;
+                if(cur.isEnd){
+                    if(nickname.contains(s.substring(idx + 1))) return true;
                 }
+                idx++;
             }
             return false;
         }
     }
 
-
-    static class Letter{
-        Letter [] next;
+    static class Node{
+        Node [] child;
         boolean isEnd;
 
-        Letter(){
-            this.next = new Letter[26];
+        Node(){
+            this.child = new Node[26];
             this.isEnd = false;
         }
     }
-
 }
