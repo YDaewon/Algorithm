@@ -3,78 +3,64 @@ import java.util.*;
 
 public class Main {
     static int n;
-    static Node [] tree;
-
+    static Biz [] tree;
     static int [] need;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-
         while(true){
-            n = Integer.parseInt(br.readLine());
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            n = Integer.parseInt(st.nextToken());
             if(n == 0) break;
-            tree = new Node[n+1];
-            need = new int[n+1];
-
-            StringTokenizer st;
+            boolean [] flag = new boolean[n+1];
+            tree = new Biz [n+1];
+            need = new int [n+1];
             for (int i = 0; i < n; i++) {
                 st = new StringTokenizer(br.readLine());
-
-                int num = Integer.parseInt(st.nextToken());
-                int cnt = Integer.parseInt(st.nextToken());
+                int v = Integer.parseInt(st.nextToken());
+                int biz_cnt = Integer.parseInt(st.nextToken());
+                tree[v] = new Biz(biz_cnt);
                 int d = Integer.parseInt(st.nextToken());
 
-                tree[num] = new Node(cnt);
                 for (int j = 0; j < d; j++) {
-                    int child = Integer.parseInt(st.nextToken());
-                    tree[num].child.add(child);
+                    int t = Integer.parseInt(st.nextToken());
+                    flag[t] = true;
+                    tree[v].child.add(t);
                 }
             }
-
             int root = 1;
-            boolean [] v = new boolean[n+1];
-            for (int i = 1; i <= n; i++) {
-                Node t = tree[i];
-                for(int c : t.child){
-                    v[c] = true;
+            for(int j = 1; j <= n; j++){
+                if(!flag[j]) {
+                    root = j;
+                    break; 
                 }
             }
 
-            for (int i = 1; i <= n; i++) {
-                if(!v[i]){
-                    root = i;
-                    break;
-                }
-            }
-
-            go(root);
-
+            count(root);
             int ans = 0;
-            for (int i : need) {
-                ans += i;
-            }
-            sb.append(ans+"\n");
+            for(int t : need) ans += t;
+            sb.append(ans).append("\n");     
         }
         System.out.println(sb);
     }
 
-    private static int go(int now) {
-        int cnt = tree[now].cnt - 1;
 
-        for(int c : tree[now].child){
-            cnt += go(c);
+    static int count(int cur){
+        int c = tree[cur].cnt - 1;
+        for (int i : tree[cur].child) {
+            c += count(i);
         }
+        need[cur] = Math.abs(c);
 
-        need[now] = Math.abs(cnt);
-
-        return cnt;
+        return c;
     }
 
-    static class Node{
+
+    static class Biz{
         int cnt;
         List<Integer> child;
 
-        Node(int cnt){
+        Biz(int cnt){
             this.cnt = cnt;
             this.child = new ArrayList<>();
         }
