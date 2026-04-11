@@ -1,42 +1,34 @@
- import java.io.*;
+import java.io.*;
 import java.util.*;
 
 public class Main {
-
     static int n, m;
-    static int [] wall;
+    static boolean [] wall;
+
+    /*
+    |   |   |   |   |   |
+    */
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
         n = Integer.parseInt(br.readLine());
         m = Integer.parseInt(br.readLine());
-
-        wall = new int [n+1]; // i번 위치 오른쪽 벽(i ~ i+1 사이 벽), 1 = 벽이 있는 상태
-        Arrays.fill(wall, 1);
-        
+        StringTokenizer st;
+        wall = new boolean [n + 1];
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-
-            for(int j = a; j < b; j++) wall[j] = 0;
-
-
-            // for (int j = 1; j < n; j++) {
-            //     System.out.print(wall[j] + " ");
-            // }
-            // System.out.println();
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            for (int j = s; j < e; j++) {
+                wall[j] = true;
+            }
         }
 
         int cnt = 1;
         for (int i = 1; i < n; i++) {
-            cnt += wall[i];
+            if(!wall[i]) cnt++;
         }
-
         System.out.println(cnt);
-        
-    }   
+    }
 
 }
