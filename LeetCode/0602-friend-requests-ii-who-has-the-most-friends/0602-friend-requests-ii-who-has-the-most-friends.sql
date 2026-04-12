@@ -1,24 +1,26 @@
 WITH A AS(
     SELECT
-        r1.requester_id AS id,
-        COUNT(r1.requester_id) AS num
-    FROM RequestAccepted r1
-    GROUP BY r1.requester_id
+        requester_id AS id,
+        COUNT(*) AS num
+    FROM RequestAccepted
+    GROUP BY requester_id
 ),
 B AS(
     SELECT
-        r1.accepter_id AS id,
-        COUNT(r1.accepter_id) AS num
-    FROM RequestAccepted r1
-    GROUP BY r1.accepter_id
+        accepter_id AS id,
+        COUNT(*) AS num
+    FROM RequestAccepted
+    GROUP BY accepter_id 
 )
 
-SELECT
+SELECT 
     id,
-    sum(num) AS num
-FROM (SELECT * FROM A
-UNION ALL
-SELECT * FROM B) a
+    SUM(num) AS num
+FROM (
+    SELECT * FROM A
+    UNION ALL
+    SELECT * FROM B
+) x
 GROUP BY id
 ORDER BY num DESC
 LIMIT 1
